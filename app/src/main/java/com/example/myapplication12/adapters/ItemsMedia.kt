@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication12.ImageLoader
 import com.example.myapplication12.MediaModel
 import com.example.myapplication12.databinding.ItemsMediaBinding
+import com.google.android.exoplayer2.ExoPlayer
 
 
 interface OnItemClickCallback {
@@ -15,7 +16,6 @@ interface OnItemClickCallback {
 
 class ItemsMedia(private val onItemClickCallback: OnItemClickCallback) :
     RecyclerView.Adapter<ItemsMedia.MediaViewHolder>() {
-
     private val fileMedia: ArrayList<MediaModel> = arrayListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MediaViewHolder {
@@ -49,7 +49,7 @@ class ItemsMedia(private val onItemClickCallback: OnItemClickCallback) :
             )
             itemView.setOnClickListener {
                 onItemClickCallback.onItemClick(
-                    model.displayName.toString()
+                    model.path
                 )
             }
 

@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
+import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -22,7 +23,10 @@ import com.example.myapplication12.adapters.ItemsMedia
 import com.example.myapplication12.adapters.OnItemClickCallback
 import com.example.myapplication12.databinding.ActivityMainBinding
 import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.source.ProgressiveMediaSource
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -184,6 +188,7 @@ class MainActivity : AppCompatActivity() , OnItemClickCallback {
             null,
             null
         )
+
         try {
             cursor?.let { cursor ->
                 if (cursor.moveToFirst()) {
@@ -203,9 +208,47 @@ class MainActivity : AppCompatActivity() , OnItemClickCallback {
             }
             itemAdapterOffline.updateList(mediaList)
             setUpCategoriesNameRecyclerView()
+         //   getImage()
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    private fun getImage(){
+        val imageProjection = arrayOf(
+            MediaStore.Images.ImageColumns.DATA,
+            MediaStore.Images.Media.DISPLAY_NAME
+        )
+
+        // Query for images
+        val imageCursor = this@MainActivity.contentResolver.query(
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            imageProjection,
+            null,
+            null,
+            null
+        )
+        try {
+            // Add images to the media list
+            imageCursor?.let { cursor ->
+                if (cursor.moveToFirst()) {
+                    do {
+                        val data = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA))
+                        val displayName = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME))
+                        val thumbnail = BitmapFactory.decodeFile(data)
+                        mediaList.add(MediaModel(data, displayName, thumbnail))
+                    } while (cursor.moveToNext())
+                }
+                cursor.close()
+            }
+            Log.i("list","${mediaList.size}")
+            itemAdapterOffline.updateList(mediaList)
+            setUpCategoriesNameRecyclerView()
+            viewBinding.rvMediaFilesInOffline.visibility = View.VISIBLE
+
+       } catch (e: Exception) {
+        e.printStackTrace()
+       }
     }
 
 
@@ -228,8 +271,24 @@ class MainActivity : AppCompatActivity() , OnItemClickCallback {
 
 
     override fun onItemClick(name: String) {
-        TODO("Not yet implemented")
+        val videoUri = Uri.parse(name)
+        val mediaSource = ProgressiveMediaSource.Factory(
+            DefaultDataSourceFactory(this, "exoplayer-sample")
+        ).createMediaSource(MediaItem.fromUri(videoUri))
+        exoPlayer = ExoPlayer.Builder(this).build()
+        exoPlayer.playWhenReady = true
+        exoPlayer.setMediaSource(mediaSource)
+        exoPlayer.prepare()
+        exoPlayer.play()
+        viewBinding.playerView.player = exoPlayer
+        viewBinding.playerView.visibility = View.VISIBLE
     }
+
+    override fun onStop() {
+        super.onStop()
+        exoPlayer?.release() 
+    }
+
 
 
 }
