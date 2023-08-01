@@ -1,5 +1,9 @@
 package com.example.myapplication12
 
+import android.graphics.Bitmap
+
 data class MediaModel(
-    val mediaName: String?
-)
+    val path: String,
+    val displayName: String,
+    val thumbnail: Bitmap?
+    )
