@@ -43,10 +43,10 @@ class ItemsMedia(private val onItemClickCallback: OnItemClickCallback) :
     inner class MediaViewHolder(private val binding: ItemsMediaBinding) : RecyclerView.ViewHolder(binding.root){
         fun bind(model: MediaModel, onItemClickCallback: OnItemClickCallback) {
             binding.tvNameMusic.text = model.displayName
-         /*   ImageLoader.loadImage(
+            ImageLoader.loadImage(
                 binding.ivPictureSong,
-                model.displayName.toString()
-            )*/
+                model.path
+            )
             itemView.setOnClickListener {
                 onItemClickCallback.onItemClick(
                     model.displayName.toString()

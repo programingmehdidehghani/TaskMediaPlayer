@@ -9,7 +9,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_media_files_in_offline"
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="12dp"
