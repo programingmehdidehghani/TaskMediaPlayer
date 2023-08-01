@@ -50,6 +50,7 @@ class MainActivity : AppCompatActivity() , OnItemClickCallback {
         super.onCreate(savedInstanceState)
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
+        exoPlayer = ExoPlayer.Builder(this).build()
         if (ContextCompat.checkSelfPermission(this@MainActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED
             && ContextCompat.checkSelfPermission(this@MainActivity, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
             requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -179,39 +180,45 @@ class MainActivity : AppCompatActivity() , OnItemClickCallback {
 
     @RequiresApi(Build.VERSION_CODES.P)
     fun getAllMedia() {
-        val projection =
-            arrayOf(MediaStore.Video.VideoColumns.DATA, MediaStore.Video.Media.DISPLAY_NAME)
-        val cursor = this.contentResolver.query(
-            MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
-            projection,
-            null,
-            null,
-            null
-        )
+        uiScope.launch (Dispatchers.IO){
+            val projection =
+                arrayOf(MediaStore.Video.VideoColumns.DATA, MediaStore.Video.Media.DISPLAY_NAME)
+            val cursor = this@MainActivity.contentResolver.query(
+                MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+                projection,
+                null,
+                null,
+                null
+            )
 
-        try {
-            cursor?.let { cursor ->
-                if (cursor.moveToFirst()) {
-                    do {
-                        val data = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA))
-                        val displayName = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME))
-                        val retriever = MediaMetadataRetriever()
-                        retriever.setDataSource(data)
-                        val thumbnail = retriever.getFrameAtTime(
-                            100,
-                            MediaMetadataRetriever.OPTION_CLOSEST
-                        )
-                        mediaList.add(MediaModel(data, displayName, thumbnail))
-                    } while (cursor.moveToNext())
+            try {
+                cursor?.let { cursor ->
+                    if (cursor.moveToFirst()) {
+                        do {
+                            val data = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA))
+                            val displayName = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME))
+                            val retriever = MediaMetadataRetriever()
+                            retriever.setDataSource(data)
+                            val thumbnail = retriever.getFrameAtTime(
+                                100,
+                                MediaMetadataRetriever.OPTION_CLOSEST
+                            )
+                            mediaList.add(MediaModel(data, displayName, thumbnail))
+                        } while (cursor.moveToNext())
+                    }
+                    cursor.close()
                 }
-                cursor.close()
+                withContext(Dispatchers.Main){
+                    itemAdapterOffline.updateList(mediaList)
+                    setUpCategoriesNameRecyclerView()
+                }
+
+                //   getImage()
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
-            itemAdapterOffline.updateList(mediaList)
-            setUpCategoriesNameRecyclerView()
-         //   getImage()
-        } catch (e: Exception) {
-            e.printStackTrace()
         }
+
     }
 
     private fun getImage(){
@@ -275,7 +282,6 @@ class MainActivity : AppCompatActivity() , OnItemClickCallback {
         val mediaSource = ProgressiveMediaSource.Factory(
             DefaultDataSourceFactory(this, "exoplayer-sample")
         ).createMediaSource(MediaItem.fromUri(videoUri))
-        exoPlayer = ExoPlayer.Builder(this).build()
         exoPlayer.playWhenReady = true
         exoPlayer.setMediaSource(mediaSource)
         exoPlayer.prepare()
@@ -286,7 +292,7 @@ class MainActivity : AppCompatActivity() , OnItemClickCallback {
 
     override fun onStop() {
         super.onStop()
-        exoPlayer?.release() 
+        exoPlayer?.release()
     }
 
 
