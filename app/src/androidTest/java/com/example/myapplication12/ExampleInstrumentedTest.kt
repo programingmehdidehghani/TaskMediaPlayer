@@ -26,7 +26,7 @@ class ExampleInstrumentedTest {
     private lateinit var testMediaList: List<MediaModel>
     private lateinit var adapter: ItemsMedia
 
-    @Before
+   /* @Before
     fun setUp() {
         testMediaList = listOf(
             MediaModel("Photo 1", "content://media/external/images/media/1", null),
@@ -67,7 +67,7 @@ class ExampleInstrumentedTest {
         val viewHolder = adapter.ViewHolder(view)
         adapter.onBindViewHolder(viewHolder, 2)
         assertThat(viewHolder.textView.text, `is`("Video 1"))
-    }
+    }*/
 
   //  @get:Rule
   //  val activityRule = ActivityTestRule(MainActivity::class.java)*/

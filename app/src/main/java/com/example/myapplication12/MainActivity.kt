@@ -15,6 +15,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication12.adapters.ItemsMedia
 import com.example.myapplication12.adapters.OnItemClickCallback
@@ -176,22 +177,22 @@ class MainActivity : AppCompatActivity() , OnItemClickCallback {
     @RequiresApi(Build.VERSION_CODES.P)
     fun getAllMedia() {
         uiScope.launch (Dispatchers.IO){
-            val imageProjection = arrayOf(
-                MediaStore.Images.ImageColumns.DATA,
-                MediaStore.Images.Media.DISPLAY_NAME
+            val videoProjection = arrayOf(
+                MediaStore.Video.VideoColumns.DATA,
+                MediaStore.Video.Media.DISPLAY_NAME
             )
 
-            // Query for images
-            val imageCursor = this@MainActivity.contentResolver.query(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                imageProjection,
+            // Query for videos
+            val videoCursor = this@MainActivity.contentResolver.query(
+                MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+                videoProjection,
                 null,
                 null,
                 null
             )
 
             try {
-                imageCursor?.let { cursor ->
+                videoCursor?.let { cursor ->
                     if (cursor.moveToFirst()) {
                         do {
                             val data = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA))
@@ -268,7 +269,7 @@ class MainActivity : AppCompatActivity() , OnItemClickCallback {
 
     private fun setUpCategoriesNameRecyclerView() {
         val layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+            LinearLayoutManager(this, GridLayoutManager.VERTICAL, false)
         viewBinding.rvMediaFilesInOffline.apply {
             this.layoutManager = layoutManager
             adapter = itemAdapterOffline
