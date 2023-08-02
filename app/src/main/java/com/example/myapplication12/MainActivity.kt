@@ -2,7 +2,6 @@ package com.example.myapplication12
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
 import android.net.Uri
@@ -13,10 +12,8 @@ import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication12.adapters.ItemsMedia
@@ -24,10 +21,8 @@ import com.example.myapplication12.adapters.OnItemClickCallback
 import com.example.myapplication12.databinding.ActivityMainBinding
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -181,18 +176,22 @@ class MainActivity : AppCompatActivity() , OnItemClickCallback {
     @RequiresApi(Build.VERSION_CODES.P)
     fun getAllMedia() {
         uiScope.launch (Dispatchers.IO){
-            val projection =
-                arrayOf(MediaStore.Video.VideoColumns.DATA, MediaStore.Video.Media.DISPLAY_NAME)
-            val cursor = this@MainActivity.contentResolver.query(
-                MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
-                projection,
+            val imageProjection = arrayOf(
+                MediaStore.Images.ImageColumns.DATA,
+                MediaStore.Images.Media.DISPLAY_NAME
+            )
+
+            // Query for images
+            val imageCursor = this@MainActivity.contentResolver.query(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                imageProjection,
                 null,
                 null,
                 null
             )
 
             try {
-                cursor?.let { cursor ->
+                imageCursor?.let { cursor ->
                     if (cursor.moveToFirst()) {
                         do {
                             val data = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA))

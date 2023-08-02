@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication12.ImageLoader
 import com.example.myapplication12.MediaModel
 import com.example.myapplication12.databinding.ItemsMediaBinding
-import com.google.android.exoplayer2.ExoPlayer
 
 
 interface OnItemClickCallback {
