@@ -57,7 +57,7 @@ class ExampleInstrumentedTest {
     }
 
     @Test
-    fun testOnCreate_WithPermissionGranted() {
+    fun testOnCreateWithPermissionGranted() {
         // Mock permission granted
         val mockPackageManager: PackageManager = mock(PackageManager::class.java)
         val mockPermissionInfo: PermissionInfo = mock(PermissionInfo::class.java)
@@ -82,7 +82,7 @@ class ExampleInstrumentedTest {
     }
 
     @Test
-    fun testOnCreate_WithPermissionDenied() {
+    fun testOnCreateWithPermissionDenied() {
         // Mock permission denied
         val mockPackageManager: PackageManager = mock(PackageManager::class.java)
         val mockPermissionInfo: PermissionInfo = mock(PermissionInfo::class.java)
