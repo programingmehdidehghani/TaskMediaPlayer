@@ -208,7 +208,10 @@ class MainActivity : AppCompatActivity() , OnItemClickCallback {
                     }
                     cursor.close()
                 }
+               // val images = ImageUtils.getAllImages(this@MainActivity)
+
                 withContext(Dispatchers.Main){
+                  //  Log.i("image","$images.size")
                     itemAdapterOffline.updateList(mediaList)
                     setUpCategoriesNameRecyclerView()
                 }
