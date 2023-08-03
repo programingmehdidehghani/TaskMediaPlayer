@@ -32,17 +32,17 @@ import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() , OnItemClickCallback {
 
-    private lateinit var requestPermissionLauncher: ActivityResultLauncher<Array<String>>
+    public lateinit var requestPermissionLauncher: ActivityResultLauncher<Array<String>>
     private val itemAdapterOffline = ItemsMedia(this)
     private var _binding: ActivityMainBinding? = null
     private val viewBinding get() = _binding!!
     private val mediaList : ArrayList<MediaModel> = arrayListOf()
     private val job = Job()
     private val uiScope = CoroutineScope(Dispatchers.Main + job)
-    private lateinit var exoPlayer: ExoPlayer
+    public lateinit var exoPlayer: ExoPlayer
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-    override fun onCreate(savedInstanceState: Bundle?) {
+    public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
