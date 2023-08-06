@@ -39,6 +39,9 @@ import org.mockito.MockitoAnnotations
 @RunWith(AndroidJUnit4::class)
 class ExampleInstrumentedTest {
 
+    @get:Rule
+    val activityRule = ActivityTestRule(MainActivity::class.java)
+
     @Mock
     private lateinit var mockContext: Context
 
