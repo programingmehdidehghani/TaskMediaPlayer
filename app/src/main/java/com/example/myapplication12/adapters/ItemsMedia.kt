@@ -1,21 +1,24 @@
 package com.example.myapplication12.adapters
 
 import android.annotation.SuppressLint
+import android.text.BoringLayout
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication12.ImageLoader
+import com.example.myapplication12.MediaFile
 import com.example.myapplication12.MediaModel
+import com.example.myapplication12.MediaType
 import com.example.myapplication12.databinding.ItemsMediaBinding
 
 
 interface OnItemClickCallback {
-    fun onItemClick(name: String)
+    fun onItemClick(name: String,isVideoType: Boolean)
 }
 
 class ItemsMedia(private val onItemClickCallback: OnItemClickCallback) :
     RecyclerView.Adapter<ItemsMedia.MediaViewHolder>() {
-    private val fileMedia: ArrayList<MediaModel> = arrayListOf()
+    private val fileMedia: ArrayList<MediaFile> = arrayListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MediaViewHolder {
         val binding = ItemsMediaBinding.inflate(LayoutInflater.from(parent.context),parent,false)
@@ -31,7 +34,7 @@ class ItemsMedia(private val onItemClickCallback: OnItemClickCallback) :
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun updateList(list: List<MediaModel>) {
+    fun updateList(list: List<MediaFile>) {
         this.fileMedia.clear()
         this.fileMedia.addAll(list)
         notifyDataSetChanged()
@@ -40,16 +43,25 @@ class ItemsMedia(private val onItemClickCallback: OnItemClickCallback) :
 
 
     inner class MediaViewHolder(private val binding: ItemsMediaBinding) : RecyclerView.ViewHolder(binding.root){
-        fun bind(model: MediaModel, onItemClickCallback: OnItemClickCallback) {
-            binding.tvNameMusic.text = model.displayName
+        fun bind(model: MediaFile, onItemClickCallback: OnItemClickCallback) {
+            binding.tvNameMusic.text = model.name
             ImageLoader.loadImage(
                 binding.ivPictureSong,
-                model.path
+                model.image
             )
             itemView.setOnClickListener {
-                onItemClickCallback.onItemClick(
-                    model.path
-                )
+                if (model.type == MediaType.VIDEO) {
+                    onItemClickCallback.onItemClick(
+                        model.image,
+                        isVideoType = true
+                    )
+                } else  {
+                    onItemClickCallback.onItemClick(
+                        model.image,
+                        isVideoType = false
+                    )
+                }
+
             }
 
         }
