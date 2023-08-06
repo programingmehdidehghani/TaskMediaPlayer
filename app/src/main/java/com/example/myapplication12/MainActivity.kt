@@ -224,43 +224,6 @@ class MainActivity : AppCompatActivity() , OnItemClickCallback {
 
     }
 
-    private fun getImage(){
-        val imageProjection = arrayOf(
-            MediaStore.Images.ImageColumns.DATA,
-            MediaStore.Images.Media.DISPLAY_NAME
-        )
-
-        // Query for images
-        val imageCursor = this@MainActivity.contentResolver.query(
-            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-            imageProjection,
-            null,
-            null,
-            null
-        )
-        try {
-            // Add images to the media list
-            imageCursor?.let { cursor ->
-                if (cursor.moveToFirst()) {
-                    do {
-                        val data = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA))
-                        val displayName = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME))
-                        val thumbnail = BitmapFactory.decodeFile(data)
-                        mediaList.add(MediaModel(data, displayName, thumbnail))
-                    } while (cursor.moveToNext())
-                }
-                cursor.close()
-            }
-            Log.i("list","${mediaList.size}")
-            itemAdapterOffline.updateList(mediaList)
-            setUpCategoriesNameRecyclerView()
-            viewBinding.rvMediaFilesInOffline.visibility = View.VISIBLE
-
-       } catch (e: Exception) {
-        e.printStackTrace()
-       }
-    }
-
 
 
 
