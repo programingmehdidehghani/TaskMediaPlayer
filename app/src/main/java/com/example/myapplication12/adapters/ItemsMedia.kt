@@ -40,6 +40,13 @@ class ItemsMedia(private val onItemClickCallback: OnItemClickCallback) :
         notifyDataSetChanged()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
+    fun addItems(newItems: List<MediaFile>) {
+        this.fileMedia.clear()
+        this.fileMedia.addAll(newItems)
+        notifyDataSetChanged()
+    }
+
 
 
     inner class MediaViewHolder(private val binding: ItemsMediaBinding) : RecyclerView.ViewHolder(binding.root){
